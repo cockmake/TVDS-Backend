@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tvds.newtvdsbackend.mapper.ComponentMapper">
+
+    <resultMap id="BaseResultMap" type="com.tvds.newtvdsbackend.domain.entity.Component">
+        <id property="id" column="id"/>
+        <result property="componentName" column="component_name"/>
+        <result property="componentType" column="component_type"/>
+        <result property="componentDesc" column="component_desc"/>
+        <result property="detectionIou" column="detection_iou"/>
+        <result property="detectionConf" column="detection_conf"/>
+        <result property="abnormalityDesc" column="abnormality_desc"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,component_name,component_type,component_desc,detection_iou,detection_conf,
+        abnormality_desc,is_deleted,created_at,updated_at
+    </sql>
+    <select id="findLabelBoxByComponentId" resultType="com.tvds.newtvdsbackend.domain.vo.VisualPromptVO">
+        SELECT ci.id AS component_id,
+               ci.component_name,
+               ci.component_type,
+               ti.image_path,
+               lb.x1,
+               lb.y1,
+               lb.x2,
+               lb.y2
+        FROM component ci
+                 JOIN
+             component_template_image ti ON ci.id = ti.component_id
+                 JOIN
+             component_template_image_box lb ON ti.id = lb.template_image_id
+        WHERE ci.id = #{componentId}
+          AND ci.is_deleted = 0
+          AND ti.is_deleted = 0
+    </select>
+
+
+</mapper>

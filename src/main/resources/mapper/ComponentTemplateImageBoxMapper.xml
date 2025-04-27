@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tvds.newtvdsbackend.mapper.ComponentTemplateImageBoxMapper">
+
+    <resultMap id="BaseResultMap" type="com.tvds.newtvdsbackend.domain.entity.ComponentTemplateImageBox">
+            <id property="id" column="id" />
+            <result property="templateImageId" column="template_image_id" />
+            <result property="x1" column="x1" />
+            <result property="y1" column="y1" />
+            <result property="x2" column="x2" />
+            <result property="y2" column="y2" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,template_image_id,x1,y1,x2,y2,
+        created_at,updated_at
+    </sql>
+</mapper>

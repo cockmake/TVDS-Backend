@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: new-tvds-backend
+  datasource:
+    url: jdbc:mysql://localhost:3306/new_tvds
+    username: root
+    password: make5211314
+    druid:
+      initial-size: 2
+      min-idle: 2
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 45MB
+      resolve-lazily: false
+
+common:
+  image-type:
+    - png
+    - jpg
+    - jpeg
+
+http:
+  fastapi-url: http://192.168.188.8:3456/api/v1
+
+cluster:
+  snowflake:
+    worker-id: 0
+    datacenter-id: 0
+minio:
+  endpoint: http://localhost:9000
+  access-key: root
+  secret-key: csu@2024
+  template-image-bucket: new-tvds-component-template-image
+  detect-result-bucket: new-tvds-detect-result
+  railway-vehicle-bucket: new-tvds-railway-vehicle
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
