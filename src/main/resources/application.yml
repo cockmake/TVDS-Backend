@@ -2,9 +2,9 @@ spring:
   application:
     name: new-tvds-backend
   datasource:
-    url: jdbc:mysql://localhost:3306/new_tvds
+    url: jdbc:mysql://localhost:3308/new_tvds
     username: root
-    password: make5211314
+    password: csu@2024
     druid:
       initial-size: 2
       min-idle: 2
@@ -18,12 +18,21 @@ spring:
       max-file-size: 20MB
       max-request-size: 45MB
       resolve-lazily: false
+  rabbitmq:
+    host: 192.168.188.1
+    port: 5674
+    username: root
+    password: csu@2024
 
 common:
   image-type:
     - png
     - jpg
     - jpeg
+  rabbitmq:
+    component-location-exchange-name: component.location.exchange
+    producer-component-location-routing-key: producer.component.location.key
+    producer-component-location-queue-name: producer.component.location.queue
 
 http:
   fastapi-url: http://192.168.188.8:3456/api/v1
@@ -32,6 +41,8 @@ cluster:
   snowflake:
     worker-id: 0
     datacenter-id: 0
+
+
 minio:
   endpoint: http://localhost:9000
   access-key: root
@@ -43,3 +54,5 @@ server:
   port: 8080
   servlet:
     context-path: /api/v1
+
+
