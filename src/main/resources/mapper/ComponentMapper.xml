@@ -39,6 +39,26 @@
           AND ci.is_deleted = 0
           AND ti.is_deleted = 0
     </select>
+    <select id="findAllLabelBox" resultType="com.tvds.newtvdsbackend.domain.vo.VisualPromptVO">
+        SELECT ci.id AS component_id,
+               ci.component_name,
+               ci.component_type,
+               ti.image_path,
+               ci.detection_conf,
+               ci.detection_iou,
+               ci.abnormality_desc,
+               lb.x1,
+               lb.y1,
+               lb.x2,
+               lb.y2
+        FROM component ci
+                 JOIN
+             component_template_image ti ON ci.id = ti.component_id
+                 JOIN
+             component_template_image_box lb ON ti.id = lb.template_image_id
+        WHERE ci.is_deleted = 0
+          AND ti.is_deleted = 0
+    </select>
 
 
 </mapper>

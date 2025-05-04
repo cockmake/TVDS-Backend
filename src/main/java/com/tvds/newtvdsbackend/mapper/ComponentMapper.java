@@ -15,6 +15,7 @@ import java.util.Map;
 */
 public interface ComponentMapper extends BaseMapper<Component> {
      List<VisualPromptVO> findLabelBoxByComponentId(String componentId);
+     List<VisualPromptVO> findAllLabelBox();
 }
 
 

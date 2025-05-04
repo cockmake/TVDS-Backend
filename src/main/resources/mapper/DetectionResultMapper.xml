@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tvds.newtvdsbackend.mapper.DetectionResultMapper">
+
+    <resultMap id="BaseResultMap" type="com.tvds.newtvdsbackend.domain.entity.DetectionResult">
+            <id property="id" column="id" />
+            <result property="taskId" column="task_id" />
+            <result property="detectionTime" column="detection_time" />
+            <result property="detectionConf" column="detection_conf" />
+            <result property="abnormalityDesc" column="abnormality_desc" />
+            <result property="isAbnormal" column="is_abnormal" />
+            <result property="componentId" column="component_id" />
+            <result property="componentImagePath" column="component_image_path" />
+            <result property="x1" column="x1" />
+            <result property="y1" column="y1" />
+            <result property="x2" column="x2" />
+            <result property="y2" column="y2" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,task_id,detection_time,detection_conf,abnormality_desc,is_abnormal,
+        component_id,component_image_path,x1,y1,x2,
+        y2
+    </sql>
+    <select id="selectComponentCountByTaskId" resultType="com.tvds.newtvdsbackend.domain.vo.DetectionComponentTypeVO">
+        SELECT c.id     AS component_id,
+               c.component_type,
+               c.component_name,
+               COUNT(*) AS count
+        FROM detection_result dr
+                 JOIN component c ON dr.component_id = c.id
+        WHERE dr.task_id = #{taskId}
+          AND c.is_deleted = 0
+        GROUP BY c.id,
+                 c.component_type,
+                 c.component_name
+    </select>
+</mapper>

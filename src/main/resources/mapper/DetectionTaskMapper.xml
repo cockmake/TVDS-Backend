@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tvds.newtvdsbackend.mapper.DetectionTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.tvds.newtvdsbackend.domain.entity.DetectionTask">
+        <id property="id" column="id"/>
+        <result property="taskStatus" column="task_status"/>
+        <result property="vehicleId" column="vehicle_id"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, task_status, vehicle_id, is_deleted, created_at, updated_at
+    </sql>
+
+    <select id="getDetectionTaskPage"
+            resultType="com.tvds.newtvdsbackend.domain.vo.DetectionTaskVO">
+        SELECT
+        dt.id,  -- 使用 DetectionTaskVO 中的字段名 id
+        dt.task_status,
+        dt.vehicle_id,
+        rv.vehicle_info,
+        rv.vehicle_desc,
+        dt.created_at,
+        dt.updated_at
+        FROM
+        detection_task dt
+        LEFT JOIN
+        railway_vehicle rv ON dt.vehicle_id = rv.id
+        WHERE
+        dt.is_deleted = 0
+        <if test="dto.taskStatus != null">
+            AND dt.task_status = #{dto.taskStatus}
+        </if>
+        ORDER BY
+        dt.created_at DESC
+    </select>
+</mapper>

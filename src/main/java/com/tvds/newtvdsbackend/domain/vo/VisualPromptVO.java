@@ -8,6 +8,9 @@ public class VisualPromptVO {
     private String componentName;
     private String componentType;
     private String imagePath;
+    private Float detectionConf;
+    private Float detectionIou;
+    private String abnormalityDesc;
     private Float x1;
     private Float y1;
     private Float x2;

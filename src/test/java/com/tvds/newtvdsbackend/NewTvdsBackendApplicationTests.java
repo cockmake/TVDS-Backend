@@ -35,21 +35,21 @@ class NewTvdsBackendApplicationTests {
         String exchangeName = RabbitMqUtil.COMPONENT_LOCATION_EXCHANGE_NAME;
         String routingKey = RabbitMqUtil.PRODUCER_COMPONENT_LOCATION_ROUTING_KEY;
 
-
         // 发送消息
         // RabbitTemplate 会使用配置的 Jackson2JsonMessageConverter 将对象转换为 JSON
         for (int i = 0; i < 10; i++) {
             // 复杂一点的信息
-            Map<String, Object> message = Map.of(
-                    "id", "123456",
-                    "name", "测试组件",
-                    "location", Map.of(
-                            "x", 100,
-                            "y", 200
-                    ),
-                    "status", "active",
-                    "index", i
-            );
+//            Map<String, Object> message = Map.of(
+//                    "id", "123456",
+//                    "name", "测试组件",
+//                    "location", Map.of(
+//                            "x", 100,
+//                            "y", 200
+//                    ),
+//                    "status", "active",
+//                    "index", i
+//            );
+            String message = "钱依然" + i;
             rabbitTemplate.convertAndSend(exchangeName, routingKey, message);
             System.out.println("消息已发送到交换机 '" + exchangeName + "'，路由键为 '" + routingKey + "'");
         }
