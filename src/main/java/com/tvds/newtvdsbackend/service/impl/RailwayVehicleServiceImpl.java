@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tvds.newtvdsbackend.configuration.MinioConfig;
+import com.tvds.newtvdsbackend.domain.dto.RailwayVehicleFormDTO;
 import com.tvds.newtvdsbackend.domain.dto.RailwayVehiclePageDTO;
 import com.tvds.newtvdsbackend.domain.entity.RailwayVehicle;
 import com.tvds.newtvdsbackend.domain.vo.PageVO;
@@ -39,14 +40,16 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
     private final MinioClient minioClient;
 
     @Override
-    public boolean addRailwayVehicle(String vehicleInfo, String vehicleDesc, MultipartFile imageFile) {
-        if (vehicleInfo == null) {
-            vehicleInfo = "";
-        }
-        if (vehicleDesc == null) {
-            vehicleDesc = "";
-        }
-
+    public boolean addRailwayVehicle(
+            String recordStation,
+            String travelDirection,
+            String vehicleInfo,
+            String vehicleIdentity,
+            String bureau,
+            String section,
+            String vehicleDesc,
+            MultipartFile imageFile
+    ) {
         // 保存到Minio
         // 检查文件名后缀
         String fileName = imageFile.getOriginalFilename();
@@ -72,8 +75,13 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
         // 写入到数据库
         RailwayVehicle railwayVehicle = new RailwayVehicle();
         railwayVehicle.setId(id);
-        railwayVehicle.setVehicleInfo(vehicleInfo);
-        railwayVehicle.setVehicleDesc(vehicleDesc);
+        railwayVehicle.setRecordStation(recordStation == null ? "" : recordStation);
+        railwayVehicle.setTravelDirection(travelDirection == null ? "" : travelDirection);
+        railwayVehicle.setVehicleInfo(vehicleInfo == null ? "" : vehicleInfo);
+        railwayVehicle.setVehicleIdentity(vehicleIdentity == null ? "" : vehicleIdentity);
+        railwayVehicle.setBureau(bureau == null ? "" : bureau);
+        railwayVehicle.setSection(section == null ? "" : section);
+        railwayVehicle.setVehicleDesc(vehicleDesc == null ? "" : vehicleDesc);
         railwayVehicle.setImagePath(objectName);
         return this.save(railwayVehicle);
     }
@@ -94,19 +102,16 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
     }
 
     @Override
-    public boolean updateRailwayVehicle(String id, RailwayVehiclePageDTO railwayVehiclePageDTO) {
-        String vehicleInfo = railwayVehiclePageDTO.getVehicleInfo();
-        String vehicleDesc = railwayVehiclePageDTO.getVehicleDesc();
-        if (vehicleDesc == null) {
-            vehicleDesc = "";
-        }
-        if (vehicleInfo == null) {
-            vehicleInfo = "";
-        }
+    public boolean updateRailwayVehicle(String id, RailwayVehicleFormDTO railwayVehicleFormDTO) {
         LambdaUpdateWrapper<RailwayVehicle> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.eq(RailwayVehicle::getId, id)
-                .set(RailwayVehicle::getVehicleInfo, vehicleInfo)
-                .set(RailwayVehicle::getVehicleDesc, vehicleDesc);
+                .set(RailwayVehicle::getRecordStation, railwayVehicleFormDTO.getRecordStation())
+                .set(RailwayVehicle::getTravelDirection, railwayVehicleFormDTO.getTravelDirection())
+                .set(RailwayVehicle::getVehicleInfo, railwayVehicleFormDTO.getVehicleInfo())
+                .set(RailwayVehicle::getVehicleIdentity, railwayVehicleFormDTO.getVehicleIdentity())
+                .set(RailwayVehicle::getBureau, railwayVehicleFormDTO.getBureau())
+                .set(RailwayVehicle::getSection, railwayVehicleFormDTO.getSection())
+                .set(RailwayVehicle::getVehicleDesc, railwayVehicleFormDTO.getVehicleDesc());
         return this.update(updateWrapper);
     }
 

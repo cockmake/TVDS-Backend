@@ -4,19 +4,20 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
-@TableName(value ="railway_vehicle")
+@TableName(value = "railway_vehicle")
 @Data
 public class RailwayVehicle implements Serializable {
     /**
-     * 
+     *
      */
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
     /**
-     * 
+     *
      */
     private String imagePath;
 
@@ -24,10 +25,26 @@ public class RailwayVehicle implements Serializable {
      * 记录客车信息
      */
     private String vehicleInfo;
-
     /**
-     * 逻辑删除标识，0 表示未删除，1 表示已删除
+     * 车辆唯一标识
      */
+    private String vehicleIdentity;
+    /**
+     * 探测站信息
+     */
+    private String recordStation;
+    /**
+     * 车辆行驶方向
+     */
+    private String travelDirection;
+    /**
+     * 担当局
+     */
+    private String bureau;
+    /**
+     * 当担段
+     */
+    private String section;
     @TableLogic
     private Integer isDeleted;
 
@@ -57,11 +74,11 @@ public class RailwayVehicle implements Serializable {
         }
         RailwayVehicle other = (RailwayVehicle) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getImagePath() == null ? other.getImagePath() == null : this.getImagePath().equals(other.getImagePath()))
-            && (this.getVehicleInfo() == null ? other.getVehicleInfo() == null : this.getVehicleInfo().equals(other.getVehicleInfo()))
-            && (this.getIsDeleted() == null ? other.getIsDeleted() == null : this.getIsDeleted().equals(other.getIsDeleted()))
-            && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
-            && (this.getVehicleDesc() == null ? other.getVehicleDesc() == null : this.getVehicleDesc().equals(other.getVehicleDesc()));
+                && (this.getImagePath() == null ? other.getImagePath() == null : this.getImagePath().equals(other.getImagePath()))
+                && (this.getVehicleInfo() == null ? other.getVehicleInfo() == null : this.getVehicleInfo().equals(other.getVehicleInfo()))
+                && (this.getIsDeleted() == null ? other.getIsDeleted() == null : this.getIsDeleted().equals(other.getIsDeleted()))
+                && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
+                && (this.getVehicleDesc() == null ? other.getVehicleDesc() == null : this.getVehicleDesc().equals(other.getVehicleDesc()));
     }
 
     @Override

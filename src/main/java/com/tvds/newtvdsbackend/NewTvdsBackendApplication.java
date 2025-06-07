@@ -12,5 +12,4 @@ public class NewTvdsBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(NewTvdsBackendApplication.class, args);
     }
-
 }

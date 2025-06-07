@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -28,7 +29,20 @@ class NewTvdsBackendApplicationTests {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+    @Test
+    void redisTest() {
+        // 测试 Redis 存储
+        String key = "a";
+        String value = "b";
+        redisTemplate.opsForValue().set(key, value);
+        System.out.println("存储到 Redis: " + key + " -> " + value);
 
+        // 测试 Redis 获取
+        Object retrievedValue = redisTemplate.opsForValue().get(key);
+        System.out.println("从 Redis 获取: " + key + " -> " + retrievedValue);
+    }
     @Test
     void sendRabbitMqMessageTest() {
         // 定义交换机名称和路由键 (与消费者配置一致)

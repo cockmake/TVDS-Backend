@@ -14,4 +14,5 @@ public class ComponentVO {
     private Double detectionConf;
     private String abnormalityDesc;
     private Date createdAt;
+    private Integer totalCount;
 }

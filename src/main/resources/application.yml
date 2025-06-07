@@ -23,7 +23,10 @@ spring:
     port: 5674
     username: root
     password: csu@2024
-
+  redis:
+    host: 192.168.188.1
+    password: csu@2024
+    port: 6381
 common:
   image-type:
     - png
@@ -54,5 +57,12 @@ server:
   port: 8080
   servlet:
     context-path: /api/v1
+
+jwt:
+  secret-key: "NEW-TVDS-CSU" # 请务必在生产环境中更改此密钥！
+  expiration-ms: 3600000 # Token 有效期，单位毫秒 (例如：1小时)
+  issuer: "New-TVDS-Backend"
+  redis-key-prefix: "jwt:auth:" # Redis中存储Token的前缀
+
 
 

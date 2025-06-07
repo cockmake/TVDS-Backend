@@ -8,12 +8,15 @@ import com.tvds.newtvdsbackend.configuration.MinioConfig;
 import com.tvds.newtvdsbackend.domain.dto.ComponentDTO;
 import com.tvds.newtvdsbackend.domain.dto.ComponentPageDTO;
 import com.tvds.newtvdsbackend.domain.entity.Component;
+import com.tvds.newtvdsbackend.domain.entity.ComponentTemplateImage;
 import com.tvds.newtvdsbackend.domain.vo.ComponentVO;
 import com.tvds.newtvdsbackend.domain.vo.PageVO;
 import com.tvds.newtvdsbackend.domain.vo.VisualPromptVO;
 import com.tvds.newtvdsbackend.exception.ServiceException;
+import com.tvds.newtvdsbackend.mapper.ComponentTemplateImageMapper;
 import com.tvds.newtvdsbackend.service.ComponentService;
 import com.tvds.newtvdsbackend.mapper.ComponentMapper;
+import com.tvds.newtvdsbackend.service.ComponentTemplateImageService;
 import com.tvds.newtvdsbackend.utils.CommonUtil;
 import com.tvds.newtvdsbackend.utils.HttpUtil;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
         implements ComponentService {
     private final RestTemplate restTemplate;
     private final MinioConfig minioConfig;
+    private final ComponentTemplateImageMapper componentTemplateImageMapper;
 
     @Override
     public boolean addNewComponent(ComponentDTO componentDTO) {
@@ -77,6 +81,10 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
                 .map(component -> {
                     ComponentVO componentVO = new ComponentVO();
                     BeanUtil.copyProperties(component, componentVO);
+                    LambdaQueryWrapper<ComponentTemplateImage> componentTemplateImageLambdaQueryWrapper = new LambdaQueryWrapper<>();
+                    componentTemplateImageLambdaQueryWrapper.eq(ComponentTemplateImage::getComponentId, component.getId());
+                    List<ComponentTemplateImage> componentTemplateImageList = componentTemplateImageMapper.selectList(componentTemplateImageLambdaQueryWrapper);
+                    componentVO.setTotalCount(componentTemplateImageList.size());
                     return componentVO;
                 }).collect(Collectors.toList())
         );

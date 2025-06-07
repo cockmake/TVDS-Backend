@@ -38,6 +38,12 @@ public class GlobalExceptionHandler {
         return new BaseResponseVO(HttpEnums.INTERNAL_SERVER_ERROR.getCode(), HttpEnums.INTERNAL_SERVER_ERROR.getMessage(), ex.getErrors());
     }
 
+    @ExceptionHandler(LoginException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public BaseResponseVO handleLoginException(LoginException ex) {
+        return new BaseResponseVO(HttpEnums.UNAUTHORIZED.getCode(), HttpEnums.UNAUTHORIZED.getMessage(), ex.getErrors());
+    }
+
     @Value("${spring.servlet.multipart.max-file-size}")
     private String MAX_PRE_UPLOAD_SIZE;
     @Value("${spring.servlet.multipart.max-request-size}")

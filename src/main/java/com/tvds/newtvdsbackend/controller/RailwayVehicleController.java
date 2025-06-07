@@ -1,6 +1,7 @@
 package com.tvds.newtvdsbackend.controller;
 
 import cn.hutool.http.ContentType;
+import com.tvds.newtvdsbackend.domain.dto.RailwayVehicleFormDTO;
 import com.tvds.newtvdsbackend.domain.dto.RailwayVehiclePageDTO;
 import com.tvds.newtvdsbackend.domain.entity.RailwayVehicle;
 import com.tvds.newtvdsbackend.domain.vo.BaseResponseVO;
@@ -28,11 +29,25 @@ public class RailwayVehicleController {
 
     @PostMapping
     public BaseResponseVO addRailwayVehicle(
+            @RequestPart(required = false) String recordStation,
+            @RequestPart(required = false) String travelDirection,
             @RequestPart(required = false) String vehicleInfo,
+            @RequestPart(required = false) String vehicleIdentity,
+            @RequestPart(required = false) String bureau,
+            @RequestPart(required = false) String section,
             @RequestPart(required = false) String vehicleDesc,
             @RequestPart MultipartFile imageFile
     ) {
-        boolean f = railwayTrainService.addRailwayVehicle(vehicleInfo, vehicleDesc, imageFile);
+        boolean f = railwayTrainService.addRailwayVehicle(
+                recordStation,
+                travelDirection,
+                vehicleInfo,
+                vehicleIdentity,
+                bureau,
+                section,
+                vehicleDesc,
+                imageFile
+        );
         if (f) {
             return BaseResponseVO.success(f);
         }
@@ -50,10 +65,10 @@ public class RailwayVehicleController {
     @PutMapping("/{id}")
     public BaseResponseVO updateRailwayVehicle(
             @PathVariable String id,
-            @RequestBody RailwayVehiclePageDTO railwayVehiclePageDTO
+            @RequestBody @Validated RailwayVehicleFormDTO railwayVehicleFormDTO
 
     ) {
-        boolean f = railwayTrainService.updateRailwayVehicle(id, railwayVehiclePageDTO);
+        boolean f = railwayTrainService.updateRailwayVehicle(id, railwayVehicleFormDTO);
         return BaseResponseVO.success(f);
     }
 
