@@ -1,5 +1,6 @@
 package com.tvds.newtvdsbackend.utils;
 
+import com.tvds.newtvdsbackend.exception.LoginException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Data
@@ -31,7 +33,8 @@ public class JwtUtil {
     public void init() {
         // 初始化密钥
         // base64
-        this.key = Keys.hmacShaKeyFor(Base64.getEncoder().encode(SECRET_KEY.getBytes(StandardCharsets.UTF_8)));
+        byte[] decodedKey = Base64.getEncoder().encode(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+        this.key = Keys.hmacShaKeyFor(decodedKey);
     }
 
     private final RedisTemplate<String, String> redisTemplate;
@@ -53,39 +56,32 @@ public class JwtUtil {
         return token;
     }
 
-    // 获取Token中的用户ID
-    public String getUserIdFromToken(String token) {
+    // 验证Token并存储用户ID
+    public String validateToken(String token) {
         try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getId();
-        } catch (JwtException e) {
-            return null;
-        }
-    }
-
-    // 验证Token
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            // 检查Redis中是否存在该token（可选，用于强制下线等场景）
-            String userId = getUserIdFromToken(token);
-            if (userId != null) {
+            // 1. 解析异常
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            String userId = claims.getId();
+            if (userId != null && !userId.isEmpty()) {
                 String redisToken = redisTemplate.opsForValue().get(REDIS_KEY_PREFIX + userId);
-                return token.equals(redisToken);
+                if (redisToken == null || !redisToken.equals(token)) {
+                    // 3. 如果Redis中没有对应的token或过期
+                    throw new JwtException("Token已失效或不匹配");
+                }
+                return userId; // 返回用户ID
+            } else {
+                // 2. 如果用户ID为空，抛出异常
+                throw new JwtException("Token中不包含有效的用户ID");
             }
-            return false;
         } catch (JwtException e) {
-            return false;
+            // 抛出异常
+            throw new LoginException(Map.of("1", "Token验证失败"));
         }
     }
 
     // 使Token失效
-    public void invalidateToken(String userId) {
+    public boolean invalidateToken(String userId) {
         // 从Redis中删除token
-        redisTemplate.delete(REDIS_KEY_PREFIX + userId);
+        return redisTemplate.delete(REDIS_KEY_PREFIX + userId);
     }
 }
