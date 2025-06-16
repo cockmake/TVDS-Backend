@@ -1,0 +1,12 @@
+ip:
+  mysql: 127.0.0.1
+  rabbitmq: 127.0.0.1
+  redis: 127.0.0.1
+  python: 192.168.188.8
+  minio: 127.0.0.1
+port:
+  mysql: 3308
+  rabbitmq: 5674
+  redis: 6381
+  python: 3456
+  minio: 9000

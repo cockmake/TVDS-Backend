@@ -4,10 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tvds</groupId>
     <artifactId>New-TVDS-Backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>New-TVDS-Backend</name>
     <description>New-TVDS-Backend</description>
     <properties>
+        <skipTests>true</skipTests>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -17,7 +18,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-amqp</artifactId>
-            <version>3.4.5</version>
         </dependency>
         <dependency>
             <groupId>io.minio</groupId>
@@ -130,7 +130,6 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.tvds.newtvdsbackend.NewTvdsBackendApplication</mainClass>
-                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>

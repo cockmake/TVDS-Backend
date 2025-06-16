@@ -2,13 +2,12 @@ spring:
   application:
     name: new-tvds-backend
   datasource:
-    url: jdbc:mysql://localhost:3308/new_tvds
+    url: jdbc:mysql://${ip.mysql}:${port.mysql}/new_tvds
     username: root
     password: csu@2024
     druid:
       initial-size: 2
       min-idle: 2
-
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
@@ -19,14 +18,16 @@ spring:
       max-request-size: 45MB
       resolve-lazily: false
   rabbitmq:
-    host: 192.168.188.1
-    port: 5674
+    host: ${ip.rabbitmq}
+    port: ${port.rabbitmq}
     username: root
     password: csu@2024
   redis:
-    host: 192.168.188.1
+    host: ${ip.redis}
     password: csu@2024
-    port: 6381
+    port: ${port.redis}
+  profiles:
+    active: dev # 可根据环境切换为 dev 或 prod
 common:
   image-type:
     - png
@@ -38,7 +39,7 @@ common:
     producer-component-location-queue-name: producer.component.location.queue
 
 http:
-  fastapi-url: http://192.168.188.8:3456/api/v1
+  fastapi-url: http://${ip.python}:${port.python}/api/v1
 
 cluster:
   snowflake:
@@ -47,7 +48,7 @@ cluster:
 
 
 minio:
-  endpoint: http://localhost:9000
+  endpoint: http://${ip.minio}:${port.minio}
   access-key: root
   secret-key: csu@2024
   template-image-bucket: new-tvds-component-template-image

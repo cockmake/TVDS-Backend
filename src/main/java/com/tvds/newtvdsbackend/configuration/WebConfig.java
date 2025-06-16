@@ -38,6 +38,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .maxAge(3600); // // 预检验请求的有效期，单位为秒。有效期内，不会重复发送预检验请求
         // 可以添加多个 addMapping
     }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)

@@ -1,0 +1,12 @@
+ip:
+  mysql: 172.20.0.4
+  rabbitmq: 172.20.0.3
+  redis: 172.20.0.5
+  python: host.docker.internal
+  minio: 172.20.0.2
+port:
+  mysql: 3306
+  rabbitmq: 5672
+  redis: 6379
+  python: 3456
+  minio: 9000
