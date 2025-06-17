@@ -2,6 +2,8 @@ package com.tvds.newtvdsbackend.domain.vo;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class DetectionComponentPartVO {
     private String resultId;
@@ -11,4 +13,16 @@ public class DetectionComponentPartVO {
     private Double y1;
     private Double x2;
     private Double y2;
+
+    // 从 RailwayVehicleVO 平铺过来的字段
+    private String vehicleId;          // 对应 RailwayVehicleVO.id
+    private String vehicleInfo;
+    private String vehicleDesc;
+    private String recordStation;
+    private String vehicleIdentity;
+    private String travelDirection;
+    private String bureau;
+    private String section;
+    private Date vehicleCreatedAt;     // 对应 RailwayVehicleVO.createdAt
+
 }

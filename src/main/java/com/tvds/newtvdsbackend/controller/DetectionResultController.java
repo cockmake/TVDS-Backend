@@ -3,6 +3,7 @@ package com.tvds.newtvdsbackend.controller;
 import com.tvds.newtvdsbackend.domain.vo.BaseResponseVO;
 import com.tvds.newtvdsbackend.domain.vo.DetectionComponentPartVO;
 import com.tvds.newtvdsbackend.domain.vo.DetectionComponentTypeVO;
+import com.tvds.newtvdsbackend.domain.vo.PageVO;
 import com.tvds.newtvdsbackend.service.DetectionResultService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -34,8 +35,8 @@ public class DetectionResultController {
             @PathVariable String taskId,
             @PathVariable String componentId
     ) {
-        List<DetectionComponentPartVO> vos = detectionResultService.getDetectionComponentPartByComponentId(taskId, componentId);
-        return BaseResponseVO.success(vos);
+        PageVO<DetectionComponentPartVO> pageVO = detectionResultService.getDetectionComponentPartByComponentId(taskId, componentId);
+        return BaseResponseVO.success(pageVO);
     }
 
     @GetMapping("/{resultId}/preview")

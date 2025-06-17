@@ -37,4 +37,30 @@
                  c.component_type,
                  c.component_name
     </select>
+    <select id="getDetectionComponentDetailInfoPage"
+            resultType="com.tvds.newtvdsbackend.domain.vo.DetectionComponentPartVO">
+        SELECT dr.id               AS result_id,
+               dr.detection_conf   AS detection_conf,
+               dr.is_abnormal      AS is_abnormal,
+               dr.x1               AS x1,
+               dr.y1               AS y1,
+               dr.x2               AS x2,
+               dr.y2               AS y2,
+               rv.id               AS vehicle_id,
+               rv.vehicle_info     AS vehicle_info,
+               rv.vehicle_desc     AS vehicle_desc,
+               rv.record_station   AS record_station,
+               rv.vehicle_identity AS vehicle_identity,
+               rv.travel_direction AS travel_direction,
+               rv.bureau           AS bureau,
+               rv.section          AS section,
+               rv.created_at       AS vehicle_created_at
+        FROM detection_result dr
+                 JOIN detection_task dt ON dr.task_id = dt.id
+                 JOIN railway_vehicle rv ON dt.vehicle_id = rv.id
+        WHERE dr.task_id = #{taskId}
+          AND dr.component_id = #{componentId}
+          AND dt.is_deleted = 0
+        ORDER BY dr.x1
+    </select>
 </mapper>

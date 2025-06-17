@@ -1,11 +1,14 @@
 package com.tvds.newtvdsbackend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tvds.newtvdsbackend.configuration.MinioConfig;
 import com.tvds.newtvdsbackend.domain.entity.DetectionResult;
 import com.tvds.newtvdsbackend.domain.vo.DetectionComponentPartVO;
 import com.tvds.newtvdsbackend.domain.vo.DetectionComponentTypeVO;
+import com.tvds.newtvdsbackend.domain.vo.PageVO;
 import com.tvds.newtvdsbackend.exception.ServiceException;
 import com.tvds.newtvdsbackend.service.DetectionResultService;
 import com.tvds.newtvdsbackend.mapper.DetectionResultMapper;
@@ -15,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,24 +37,17 @@ public class DetectionResultServiceImpl extends ServiceImpl<DetectionResultMappe
     }
 
     @Override
-    public List<DetectionComponentPartVO> getDetectionComponentPartByComponentId(String taskId, String componentId) {
-        LambdaQueryWrapper<DetectionResult> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(DetectionResult::getTaskId, taskId)
-                .eq(DetectionResult::getComponentId, componentId)
-                .orderByAsc(DetectionResult::getX1);
-        List<DetectionResult> detectionResults = this.list(wrapper);
-        return detectionResults.stream()
-                .map(result -> {
-                    DetectionComponentPartVO vo = new DetectionComponentPartVO();
-                    vo.setResultId(result.getId());
-                    vo.setDetectionConf(result.getDetectionConf());
-                    vo.setIsAbnormal(result.getIsAbnormal() == 1);
-                    vo.setX1(result.getX1());
-                    vo.setY1(result.getY1());
-                    vo.setX2(result.getX2());
-                    vo.setY2(result.getY2());
-                    return vo;
-                }).collect(Collectors.toList());
+    public PageVO<DetectionComponentPartVO> getDetectionComponentPartByComponentId(String taskId, String componentId) {
+        // 默认查询全部数据
+        IPage<DetectionComponentPartVO> page = new Page<>(1, 1000);
+        // 分页查询检测结果
+        page = this.baseMapper.getDetectionComponentDetailInfoPage(page, taskId, componentId);
+        return new PageVO<>(
+                page.getTotal(),
+                page.getCurrent(),
+                page.getSize(),
+                page.getRecords()
+        );
     }
 
     @Override

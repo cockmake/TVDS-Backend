@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tvds.newtvdsbackend.domain.dto.DetectionTaskPageDTO;
 import com.tvds.newtvdsbackend.domain.entity.DetectionTask;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.tvds.newtvdsbackend.domain.vo.DetectionComponentPartVO;
 import com.tvds.newtvdsbackend.domain.vo.DetectionTaskVO;
 import org.apache.ibatis.annotations.Param;
 
