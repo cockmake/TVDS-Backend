@@ -14,6 +14,10 @@ public class DetectionComponentPartVO {
     private Double x2;
     private Double y2;
 
+    // 检测任务
+    private Date taskCreatedAt;
+    private Date taskUpdatedAt;
+
     // 从 RailwayVehicleVO 平铺过来的字段
     private String vehicleId;          // 对应 RailwayVehicleVO.id
     private String vehicleInfo;

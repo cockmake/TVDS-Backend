@@ -8,5 +8,4 @@ public class DetectionComponentTypeVO {
     private String componentType;
     private String componentName;
     private Long count;
-    // 包含原本车辆信息
 }

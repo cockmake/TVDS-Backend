@@ -47,6 +47,8 @@
                dr.x2               AS x2,
                dr.y2               AS y2,
                rv.id               AS vehicle_id,
+               dt.created_at       AS task_created_at,
+               dt.updated_at       AS task_updated_at,
                rv.vehicle_info     AS vehicle_info,
                rv.vehicle_desc     AS vehicle_desc,
                rv.record_station   AS record_station,
