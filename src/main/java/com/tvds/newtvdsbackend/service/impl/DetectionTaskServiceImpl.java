@@ -72,7 +72,13 @@ public class DetectionTaskServiceImpl extends ServiceImpl<DetectionTaskMapper, D
                 Map.of(
                         "taskId", detectionTask.getId(),
                         "detectionResultBucket", minioConfig.getDetectResultBucket(),
-                        "vehicleImagePath", railwayVehicle.getImagePath(),
+                        "vehicleImagePaths", List.of(
+                                railwayVehicle.getImagePathA(),
+                                railwayVehicle.getImagePathB(),
+                                railwayVehicle.getImagePathC(),
+                                railwayVehicle.getImagePathD(),
+                                railwayVehicle.getImagePathE()
+                        ),
                         "railwayVehicleBucket", minioConfig.getRailwayVehicleBucket(),
                         "templateImageList", result
                 ),

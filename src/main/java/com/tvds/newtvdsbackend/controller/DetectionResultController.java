@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.InputStream;
 import java.util.List;
 
@@ -22,20 +24,22 @@ import java.util.List;
 public class DetectionResultController {
     private final DetectionResultService detectionResultService;
 
-    @GetMapping("/{taskId}")
+    @GetMapping("/{taskId}/{direction}")
     public BaseResponseVO getDetectionComponentType(
-            @PathVariable String taskId
+            @PathVariable @NotNull String taskId,
+            @PathVariable @NotNull Integer direction
     ) {
-        List<DetectionComponentTypeVO> vos = detectionResultService.getDetectionComponentTypeByTaskId(taskId);
+        List<DetectionComponentTypeVO> vos = detectionResultService.getDetectionComponentTypeByTaskId(taskId, direction);
         return BaseResponseVO.success(vos);
     }
 
-    @GetMapping("/{taskId}/{componentId}")
+    @GetMapping("/{taskId}/{direction}/{componentId}")
     public BaseResponseVO getDetectionComponentPart(
-            @PathVariable String taskId,
-            @PathVariable String componentId
+            @PathVariable @NotEmpty String taskId,
+            @PathVariable @NotEmpty Integer direction,
+            @PathVariable @NotEmpty String componentId
     ) {
-        PageVO<DetectionComponentPartVO> pageVO = detectionResultService.getDetectionComponentPartByComponentId(taskId, componentId);
+        PageVO<DetectionComponentPartVO> pageVO = detectionResultService.getDetectionComponentPartByComponentId(taskId, direction, componentId);
         return BaseResponseVO.success(pageVO);
     }
 

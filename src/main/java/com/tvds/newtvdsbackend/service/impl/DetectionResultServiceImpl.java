@@ -32,16 +32,16 @@ public class DetectionResultServiceImpl extends ServiceImpl<DetectionResultMappe
     private final MinioClient minioClient;
 
     @Override
-    public List<DetectionComponentTypeVO> getDetectionComponentTypeByTaskId(String taskId) {
-        return this.baseMapper.selectComponentCountByTaskId(taskId);
+    public List<DetectionComponentTypeVO> getDetectionComponentTypeByTaskId(String taskId, Integer direction) {
+        return this.baseMapper.selectComponentCountByTaskId(taskId, direction);
     }
 
     @Override
-    public PageVO<DetectionComponentPartVO> getDetectionComponentPartByComponentId(String taskId, String componentId) {
+    public PageVO<DetectionComponentPartVO> getDetectionComponentPartByComponentId(String taskId, Integer direction, String componentId) {
         // 默认查询全部数据
         IPage<DetectionComponentPartVO> page = new Page<>(1, 1000);
         // 分页查询检测结果
-        page = this.baseMapper.getDetectionComponentDetailInfoPage(page, taskId, componentId);
+        page = this.baseMapper.getDetectionComponentDetailInfoPage(page, taskId, direction, componentId);
         return new PageVO<>(
                 page.getTotal(),
                 page.getCurrent(),

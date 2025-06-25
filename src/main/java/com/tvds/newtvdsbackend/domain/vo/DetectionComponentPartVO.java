@@ -20,6 +20,7 @@ public class DetectionComponentPartVO {
 
     // 从 RailwayVehicleVO 平铺过来的字段
     private String vehicleId;          // 对应 RailwayVehicleVO.id
+    private Integer direction;
     private String vehicleInfo;
     private String vehicleDesc;
     private String recordStation;

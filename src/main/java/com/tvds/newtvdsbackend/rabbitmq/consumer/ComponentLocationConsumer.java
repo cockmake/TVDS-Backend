@@ -33,32 +33,39 @@ public class ComponentLocationConsumer {
             )
     )
     public void receiveMessage(ComponentLocationResponse response) {
+        System.out.println(response);
         String taskId = response.getTaskId();
-        Map<String, ComponentLocationResult> results = response.getComponentLocationResult();
+        List<Map<String, ComponentLocationResult>> componentLocationResults = response.getComponentLocationResults();
         try {
             List<DetectionResult> detectionResults = new ArrayList<>();
-            results.forEach((componentId, result) -> {
-                List<List<Integer>> boxes = result.getBoxes();
-                List<Double> confidences = result.getConfidences();
-                List<String> abnormalityResults = result.getAbnormalityResults();
-                List<Boolean> isAbnormalList = result.getIsAbnormal();
-                List<String> imagePaths = result.getImagePaths();
-                for (int i = 0; i < boxes.size(); i++) {
-                    List<Integer> box = boxes.get(i);
-                    DetectionResult dr = new DetectionResult();
-                    dr.setTaskId(taskId);
-                    dr.setDetectionConf(confidences.get(i));
-                    dr.setAbnormalityDesc(abnormalityResults.get(i));
-                    dr.setIsAbnormal(isAbnormalList.get(i) ? 1 : 0);
-                    dr.setComponentId(componentId);
-                    dr.setComponentImagePath(imagePaths.get(i));
-                    dr.setX1(box.get(0).doubleValue());
-                    dr.setY1(box.get(1).doubleValue());
-                    dr.setX2(box.get(2).doubleValue());
-                    dr.setY2(box.get(3).doubleValue());
-                    detectionResults.add(dr);
-                }
-            });
+            for (int direction = 0; direction < componentLocationResults.size(); direction++) {
+                Map<String, ComponentLocationResult> results = componentLocationResults.get(direction);
+                int finalDirection = direction;
+                results.forEach((componentId, result) -> {
+                    List<List<Integer>> boxes = result.getBoxes();
+                    List<Double> confidences = result.getConfidences();
+                    List<String> abnormalityResults = result.getAbnormalityResults();
+                    List<Boolean> isAbnormalList = result.getIsAbnormal();
+                    List<String> imagePaths = result.getImagePaths();
+                    System.out.println(imagePaths);
+                    for (int i = 0; i < boxes.size(); i++) {
+                        List<Integer> box = boxes.get(i);
+                        DetectionResult dr = new DetectionResult();
+                        dr.setTaskId(taskId);
+                        dr.setDetectionConf(confidences.get(i));
+                        dr.setAbnormalityDesc(abnormalityResults.get(i));
+                        dr.setIsAbnormal(isAbnormalList.get(i) ? 1 : 0);
+                        dr.setComponentId(componentId);
+                        dr.setComponentImagePath(imagePaths.get(i));
+                        dr.setX1(box.get(0).doubleValue());
+                        dr.setY1(box.get(1).doubleValue());
+                        dr.setX2(box.get(2).doubleValue());
+                        dr.setY2(box.get(3).doubleValue());
+                        dr.setDirection(finalDirection);
+                        detectionResults.add(dr);
+                    }
+                });
+            }
             detectionResultService.saveBatch(detectionResults);
             // 将任务标记为完成
             updateTaskStatus(taskId, 2);

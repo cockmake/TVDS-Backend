@@ -7,7 +7,7 @@ import java.util.Date;
 
 import lombok.Data;
 
-@TableName(value = "railway_vehicle")
+@TableName(value ="railway_vehicle")
 @Data
 public class RailwayVehicle implements Serializable {
     /**
@@ -19,32 +19,61 @@ public class RailwayVehicle implements Serializable {
     /**
      *
      */
-    private String imagePath;
+    private String imagePathA;
 
     /**
-     * 记录客车信息
+     *
+     */
+    private String imagePathB;
+
+    /**
+     *
+     */
+    private String imagePathC;
+
+    /**
+     *
+     */
+    private String imagePathE;
+
+    /**
+     *
+     */
+    private String imagePathD;
+
+    /**
+     * 记录车次信息
      */
     private String vehicleInfo;
+
     /**
-     * 车辆唯一标识
+     * 记录车号信息
      */
     private String vehicleIdentity;
+
     /**
-     * 探测站信息
+     * 探测站名称
      */
     private String recordStation;
+
     /**
      * 车辆行驶方向
      */
     private String travelDirection;
+
     /**
      * 担当局
      */
     private String bureau;
+
     /**
-     * 当担段
+     * 担当段
      */
     private String section;
+
+    /**
+     * 逻辑删除标识，0 表示未删除，1 表示已删除
+     */
     @TableLogic
     private Integer isDeleted;
 
@@ -74,8 +103,17 @@ public class RailwayVehicle implements Serializable {
         }
         RailwayVehicle other = (RailwayVehicle) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-                && (this.getImagePath() == null ? other.getImagePath() == null : this.getImagePath().equals(other.getImagePath()))
+                && (this.getImagePathA() == null ? other.getImagePathA() == null : this.getImagePathA().equals(other.getImagePathA()))
+                && (this.getImagePathB() == null ? other.getImagePathB() == null : this.getImagePathB().equals(other.getImagePathB()))
+                && (this.getImagePathC() == null ? other.getImagePathC() == null : this.getImagePathC().equals(other.getImagePathC()))
+                && (this.getImagePathE() == null ? other.getImagePathE() == null : this.getImagePathE().equals(other.getImagePathE()))
+                && (this.getImagePathD() == null ? other.getImagePathD() == null : this.getImagePathD().equals(other.getImagePathD()))
                 && (this.getVehicleInfo() == null ? other.getVehicleInfo() == null : this.getVehicleInfo().equals(other.getVehicleInfo()))
+                && (this.getVehicleIdentity() == null ? other.getVehicleIdentity() == null : this.getVehicleIdentity().equals(other.getVehicleIdentity()))
+                && (this.getRecordStation() == null ? other.getRecordStation() == null : this.getRecordStation().equals(other.getRecordStation()))
+                && (this.getTravelDirection() == null ? other.getTravelDirection() == null : this.getTravelDirection().equals(other.getTravelDirection()))
+                && (this.getBureau() == null ? other.getBureau() == null : this.getBureau().equals(other.getBureau()))
+                && (this.getSection() == null ? other.getSection() == null : this.getSection().equals(other.getSection()))
                 && (this.getIsDeleted() == null ? other.getIsDeleted() == null : this.getIsDeleted().equals(other.getIsDeleted()))
                 && (this.getCreatedAt() == null ? other.getCreatedAt() == null : this.getCreatedAt().equals(other.getCreatedAt()))
                 && (this.getVehicleDesc() == null ? other.getVehicleDesc() == null : this.getVehicleDesc().equals(other.getVehicleDesc()));
@@ -86,8 +124,17 @@ public class RailwayVehicle implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getImagePath() == null) ? 0 : getImagePath().hashCode());
+        result = prime * result + ((getImagePathA() == null) ? 0 : getImagePathA().hashCode());
+        result = prime * result + ((getImagePathB() == null) ? 0 : getImagePathB().hashCode());
+        result = prime * result + ((getImagePathC() == null) ? 0 : getImagePathC().hashCode());
+        result = prime * result + ((getImagePathE() == null) ? 0 : getImagePathE().hashCode());
+        result = prime * result + ((getImagePathD() == null) ? 0 : getImagePathD().hashCode());
         result = prime * result + ((getVehicleInfo() == null) ? 0 : getVehicleInfo().hashCode());
+        result = prime * result + ((getVehicleIdentity() == null) ? 0 : getVehicleIdentity().hashCode());
+        result = prime * result + ((getRecordStation() == null) ? 0 : getRecordStation().hashCode());
+        result = prime * result + ((getTravelDirection() == null) ? 0 : getTravelDirection().hashCode());
+        result = prime * result + ((getBureau() == null) ? 0 : getBureau().hashCode());
+        result = prime * result + ((getSection() == null) ? 0 : getSection().hashCode());
         result = prime * result + ((getIsDeleted() == null) ? 0 : getIsDeleted().hashCode());
         result = prime * result + ((getCreatedAt() == null) ? 0 : getCreatedAt().hashCode());
         result = prime * result + ((getVehicleDesc() == null) ? 0 : getVehicleDesc().hashCode());
@@ -101,8 +148,17 @@ public class RailwayVehicle implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", imagePath=").append(imagePath);
+        sb.append(", imagePathA=").append(imagePathA);
+        sb.append(", imagePathB=").append(imagePathB);
+        sb.append(", imagePathC=").append(imagePathC);
+        sb.append(", imagePathE=").append(imagePathE);
+        sb.append(", imagePathD=").append(imagePathD);
         sb.append(", vehicleInfo=").append(vehicleInfo);
+        sb.append(", vehicleIdentity=").append(vehicleIdentity);
+        sb.append(", recordStation=").append(recordStation);
+        sb.append(", travelDirection=").append(travelDirection);
+        sb.append(", bureau=").append(bureau);
+        sb.append(", section=").append(section);
         sb.append(", isDeleted=").append(isDeleted);
         sb.append(", createdAt=").append(createdAt);
         sb.append(", vehicleDesc=").append(vehicleDesc);

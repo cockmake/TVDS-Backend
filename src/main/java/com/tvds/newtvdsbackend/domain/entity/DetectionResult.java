@@ -26,6 +26,11 @@ public class DetectionResult implements Serializable {
     private String taskId;
 
     /**
+     * 记录车辆拍摄方向，0,1,2,3,4
+     */
+    private Integer direction;
+
+    /**
      *
      */
     private Date detectionTime;
@@ -92,6 +97,7 @@ public class DetectionResult implements Serializable {
         DetectionResult other = (DetectionResult) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
                 && (this.getTaskId() == null ? other.getTaskId() == null : this.getTaskId().equals(other.getTaskId()))
+                && (this.getDirection() == null ? other.getDirection() == null : this.getDirection().equals(other.getDirection()))
                 && (this.getDetectionTime() == null ? other.getDetectionTime() == null : this.getDetectionTime().equals(other.getDetectionTime()))
                 && (this.getDetectionConf() == null ? other.getDetectionConf() == null : this.getDetectionConf().equals(other.getDetectionConf()))
                 && (this.getAbnormalityDesc() == null ? other.getAbnormalityDesc() == null : this.getAbnormalityDesc().equals(other.getAbnormalityDesc()))
@@ -110,6 +116,7 @@ public class DetectionResult implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getTaskId() == null) ? 0 : getTaskId().hashCode());
+        result = prime * result + ((getDirection() == null) ? 0 : getDirection().hashCode());
         result = prime * result + ((getDetectionTime() == null) ? 0 : getDetectionTime().hashCode());
         result = prime * result + ((getDetectionConf() == null) ? 0 : getDetectionConf().hashCode());
         result = prime * result + ((getAbnormalityDesc() == null) ? 0 : getAbnormalityDesc().hashCode());
@@ -131,6 +138,7 @@ public class DetectionResult implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", taskId=").append(taskId);
+        sb.append(", direction=").append(direction);
         sb.append(", detectionTime=").append(detectionTime);
         sb.append(", detectionConf=").append(detectionConf);
         sb.append(", abnormalityDesc=").append(abnormalityDesc);

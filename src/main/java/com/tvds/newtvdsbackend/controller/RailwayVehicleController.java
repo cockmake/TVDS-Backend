@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.InputStream;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class RailwayVehicleController {
             @RequestPart(required = false) String bureau,
             @RequestPart(required = false) String section,
             @RequestPart(required = false) String vehicleDesc,
-            @RequestPart MultipartFile imageFile
+            @RequestPart MultipartFile[] imageFiles
     ) {
         boolean f = railwayTrainService.addRailwayVehicle(
                 recordStation,
@@ -46,7 +47,7 @@ public class RailwayVehicleController {
                 bureau,
                 section,
                 vehicleDesc,
-                imageFile
+                imageFiles
         );
         if (f) {
             return BaseResponseVO.success(f);
@@ -80,11 +81,12 @@ public class RailwayVehicleController {
         return BaseResponseVO.success(railwayVehiclePage);
     }
 
-    @GetMapping("/{id}/preview")
+    @GetMapping("/{id}/{direction}/preview")
     public ResponseEntity<InputStreamResource> getRailwayVehiclePreview(
-            @PathVariable String id
+            @PathVariable @NotEmpty String id,
+            @PathVariable @NotEmpty Integer direction
     ) {
-        InputStream stream = railwayTrainService.getRailwayVehicleImage(id);
+        InputStream stream = railwayTrainService.getRailwayVehicleImage(id, direction);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_PNG)

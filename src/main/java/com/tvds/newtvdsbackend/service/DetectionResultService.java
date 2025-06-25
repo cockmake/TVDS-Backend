@@ -12,7 +12,7 @@ import java.util.List;
 
 
 public interface DetectionResultService extends IService<DetectionResult> {
-    List<DetectionComponentTypeVO> getDetectionComponentTypeByTaskId(@Param("taskId") String taskId);
-    PageVO<DetectionComponentPartVO> getDetectionComponentPartByComponentId(String taskId, String componentId);
+    List<DetectionComponentTypeVO> getDetectionComponentTypeByTaskId(@Param("taskId") String taskId, @Param("direction") Integer direction);
+    PageVO<DetectionComponentPartVO> getDetectionComponentPartByComponentId(String taskId, Integer direction, String componentId);
     InputStream getDetectionResultPreview(String resultId);
 }

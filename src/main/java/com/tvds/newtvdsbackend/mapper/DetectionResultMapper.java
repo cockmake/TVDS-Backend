@@ -12,11 +12,15 @@ import java.util.List;
 
 
 public interface DetectionResultMapper extends BaseMapper<DetectionResult> {
-    List<DetectionComponentTypeVO> selectComponentCountByTaskId(@Param("taskId") String taskId);
+    List<DetectionComponentTypeVO> selectComponentCountByTaskId(
+            @Param("taskId") String taskId,
+            @Param("direction") Integer direction
+    );
 
     Page<DetectionComponentPartVO> getDetectionComponentDetailInfoPage(
             IPage<DetectionComponentPartVO> page,
             @Param("taskId") String taskId,
+            @Param("direction") Integer direction,
             @Param("componentId") String ComponentId
     );
 }

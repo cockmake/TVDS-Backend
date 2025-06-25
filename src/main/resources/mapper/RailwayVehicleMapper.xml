@@ -5,15 +5,26 @@
 <mapper namespace="com.tvds.newtvdsbackend.mapper.RailwayVehicleMapper">
 
     <resultMap id="BaseResultMap" type="com.tvds.newtvdsbackend.domain.entity.RailwayVehicle">
-            <id property="id" column="id" />
-            <result property="imagePath" column="image_path" />
-            <result property="vehicleInfo" column="vehicle_info" />
-            <result property="isDeleted" column="is_deleted" />
-            <result property="createdAt" column="created_at" />
-            <result property="vehicleDesc" column="vehicle_desc" />
+        <id property="id" column="id" />
+        <result property="imagePathA" column="image_path_a" />
+        <result property="imagePathB" column="image_path_b" />
+        <result property="imagePathC" column="image_path_c" />
+        <result property="imagePathE" column="image_path_e" />
+        <result property="imagePathD" column="image_path_d" />
+        <result property="vehicleInfo" column="vehicle_info" />
+        <result property="vehicleIdentity" column="vehicle_identity" />
+        <result property="recordStation" column="record_station" />
+        <result property="travelDirection" column="travel_direction" />
+        <result property="bureau" column="bureau" />
+        <result property="section" column="section" />
+        <result property="isDeleted" column="is_deleted" />
+        <result property="createdAt" column="created_at" />
+        <result property="vehicleDesc" column="vehicle_desc" />
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,image_path,vehicle_info,is_deleted,created_at,vehicle_desc
+        id,image_path_a,image_path_b,image_path_c,image_path_e,image_path_d,
+        vehicle_info,vehicle_identity,record_station,travel_direction,bureau,
+        section,is_deleted,created_at,vehicle_desc
     </sql>
 </mapper>

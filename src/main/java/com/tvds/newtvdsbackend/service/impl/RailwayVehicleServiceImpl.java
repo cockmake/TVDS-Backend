@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -48,33 +49,47 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
             String bureau,
             String section,
             String vehicleDesc,
-            MultipartFile imageFile
+            MultipartFile[] imageFiles
     ) {
-        // 保存到Minio
-        // 检查文件名后缀
-        String fileName = imageFile.getOriginalFilename();
-        String extension = StringUtils.substringAfterLast(fileName, ".");
-        if (StringUtils.isBlank(extension) || !CommonUtil.imageTypeCheck(extension)) {
-            return false;
+        // 必须要有5个图片
+        if (imageFiles == null || imageFiles.length < 5) {
+            throw new ServiceException(Map.of("1", "至少需要上传5个方位的行车图像"));
         }
-        // 写入到Minio
-        String id = SnowflakeUtil.getNext().toString();
-        String objectName = "railway-vehicle/" + id + "." + extension;
-        try {
-            minioClient.putObject(
-                    new PutObjectArgs.Builder()
-                            .bucket(minioConfig.getRailwayVehicleBucket())
-                            .object(objectName)
-                            .stream(imageFile.getInputStream(), imageFile.getSize(), -1)
-                            .contentType(imageFile.getContentType())
-                            .build()
-            );
-        } catch (Exception e) {
-            return false;
+        List<String> fileNames = new ArrayList<>();
+        for (MultipartFile imageFile : imageFiles) {
+            // 检查文件是否为空
+            if (imageFile.isEmpty()) {
+                throw new ServiceException(Map.of("1", "行车图像不能为空"));
+            }
+            // 保存到Minio
+            // 检查文件名后缀
+            String fileName = imageFile.getOriginalFilename();
+            String extension = StringUtils.substringAfterLast(fileName, ".");
+            if (StringUtils.isBlank(extension) || !CommonUtil.imageTypeCheck(extension)) {
+                return false;
+            }
+            // 写入到Minio
+            String id = SnowflakeUtil.getNext().toString();
+            String objectName = "railway-vehicle/" + id + "." + extension;
+            try {
+                minioClient.putObject(
+                        new PutObjectArgs.Builder()
+                                .bucket(minioConfig.getRailwayVehicleBucket())
+                                .object(objectName)
+                                .stream(imageFile.getInputStream(), imageFile.getSize(), -1)
+                                .contentType(imageFile.getContentType())
+                                .build()
+                );
+            } catch (Exception e) {
+                return false;
+            }
+            // 添加到文件名列表
+            fileNames.add(objectName);
         }
         // 写入到数据库
+        String railwayVehicleId = SnowflakeUtil.getNext().toString();
         RailwayVehicle railwayVehicle = new RailwayVehicle();
-        railwayVehicle.setId(id);
+        railwayVehicle.setId(railwayVehicleId);
         railwayVehicle.setRecordStation(recordStation == null ? "" : recordStation);
         railwayVehicle.setTravelDirection(travelDirection == null ? "" : travelDirection);
         railwayVehicle.setVehicleInfo(vehicleInfo == null ? "" : vehicleInfo);
@@ -82,7 +97,11 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
         railwayVehicle.setBureau(bureau == null ? "" : bureau);
         railwayVehicle.setSection(section == null ? "" : section);
         railwayVehicle.setVehicleDesc(vehicleDesc == null ? "" : vehicleDesc);
-        railwayVehicle.setImagePath(objectName);
+        railwayVehicle.setImagePathA(fileNames.get(0));
+        railwayVehicle.setImagePathB(fileNames.get(1));
+        railwayVehicle.setImagePathC(fileNames.get(2));
+        railwayVehicle.setImagePathD(fileNames.get(3));
+        railwayVehicle.setImagePathE(fileNames.get(4));
         return this.save(railwayVehicle);
     }
 
@@ -116,12 +135,31 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
     }
 
     @Override
-    public InputStream getRailwayVehicleImage(String id) {
+    public InputStream getRailwayVehicleImage(String id, Integer direction) {
         RailwayVehicle railwayVehicle = this.getById(id);
         if (railwayVehicle == null) {
             throw new ServiceException(Map.of("1", "行车记录已被删除"));
         }
-        String imagePath = railwayVehicle.getImagePath();
+        String imagePath = "";
+        switch (direction) {
+            case 0:
+                imagePath = railwayVehicle.getImagePathA();
+                break;
+            case 1:
+                imagePath = railwayVehicle.getImagePathB();
+                break;
+            case 2:
+                imagePath = railwayVehicle.getImagePathC();
+                break;
+            case 3:
+                imagePath = railwayVehicle.getImagePathD();
+                break;
+            case 4:
+                imagePath = railwayVehicle.getImagePathE();
+                break;
+            default:
+                throw new ServiceException(Map.of("1", "无效的行车图像方向"));
+        }
         try {
             GetObjectResponse objectResponse = minioClient.getObject(
                     GetObjectArgs.builder()
@@ -138,7 +176,3 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
         }
     }
 }
-
-
-
-
