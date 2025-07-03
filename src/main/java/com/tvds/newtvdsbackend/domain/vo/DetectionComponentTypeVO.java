@@ -8,4 +8,5 @@ public class DetectionComponentTypeVO {
     private String componentType;
     private String componentName;
     private Long count;
+    private Long abnormalCount;
 }

@@ -59,6 +59,8 @@
                rv.travel_direction AS travel_direction,
                rv.bureau           AS bureau,
                rv.section          AS section,
+               rv.vehicle_seq      AS vehicle_seq,
+               rv.total_sequence   AS total_sequence,
                rv.created_at       AS vehicle_created_at
         FROM detection_result dr
                  JOIN detection_task dt ON dr.task_id = dt.id

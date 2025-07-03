@@ -21,6 +21,8 @@ public interface RailwayVehicleService extends IService<RailwayVehicle> {
             String bureau,
             String section,
             String vehicleDesc,
+            String vehicleSeq,
+            String totalSequence,
             MultipartFile[] imageFiles
     );
     PageVO<RailwayVehicleVO> getRailwayVehiclePage(RailwayVehiclePageDTO railwayVehiclePageDTO);

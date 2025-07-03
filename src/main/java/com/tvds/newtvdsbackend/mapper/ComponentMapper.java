@@ -13,6 +13,7 @@ import java.util.Map;
 * @createDate 2025-04-24 08:42:04
 * @Entity com.tvds.newtvdsbackend.domain.entity.Component
 */
+
 public interface ComponentMapper extends BaseMapper<Component> {
      List<VisualPromptVO> findLabelBoxByComponentId(String componentId);
      List<VisualPromptVO> findAllLabelBox();

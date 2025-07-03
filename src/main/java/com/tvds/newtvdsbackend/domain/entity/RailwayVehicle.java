@@ -4,9 +4,12 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import lombok.Data;
 
+/**
+ *
+ * @TableName railway_vehicle
+ */
 @TableName(value ="railway_vehicle")
 @Data
 public class RailwayVehicle implements Serializable {
@@ -45,6 +48,16 @@ public class RailwayVehicle implements Serializable {
      * 记录车次信息
      */
     private String vehicleInfo;
+
+    /**
+     * 记录辆序（车厢）
+     */
+    private Integer vehicleSeq;
+
+    /**
+     * 记录总辆序（车厢）数
+     */
+    private Integer totalSequence;
 
     /**
      * 记录车号信息
@@ -109,6 +122,8 @@ public class RailwayVehicle implements Serializable {
                 && (this.getImagePathE() == null ? other.getImagePathE() == null : this.getImagePathE().equals(other.getImagePathE()))
                 && (this.getImagePathD() == null ? other.getImagePathD() == null : this.getImagePathD().equals(other.getImagePathD()))
                 && (this.getVehicleInfo() == null ? other.getVehicleInfo() == null : this.getVehicleInfo().equals(other.getVehicleInfo()))
+                && (this.getVehicleSeq() == null ? other.getVehicleSeq() == null : this.getVehicleSeq().equals(other.getVehicleSeq()))
+                && (this.getTotalSequence() == null ? other.getTotalSequence() == null : this.getTotalSequence().equals(other.getTotalSequence()))
                 && (this.getVehicleIdentity() == null ? other.getVehicleIdentity() == null : this.getVehicleIdentity().equals(other.getVehicleIdentity()))
                 && (this.getRecordStation() == null ? other.getRecordStation() == null : this.getRecordStation().equals(other.getRecordStation()))
                 && (this.getTravelDirection() == null ? other.getTravelDirection() == null : this.getTravelDirection().equals(other.getTravelDirection()))
@@ -130,6 +145,8 @@ public class RailwayVehicle implements Serializable {
         result = prime * result + ((getImagePathE() == null) ? 0 : getImagePathE().hashCode());
         result = prime * result + ((getImagePathD() == null) ? 0 : getImagePathD().hashCode());
         result = prime * result + ((getVehicleInfo() == null) ? 0 : getVehicleInfo().hashCode());
+        result = prime * result + ((getVehicleSeq() == null) ? 0 : getVehicleSeq().hashCode());
+        result = prime * result + ((getTotalSequence() == null) ? 0 : getTotalSequence().hashCode());
         result = prime * result + ((getVehicleIdentity() == null) ? 0 : getVehicleIdentity().hashCode());
         result = prime * result + ((getRecordStation() == null) ? 0 : getRecordStation().hashCode());
         result = prime * result + ((getTravelDirection() == null) ? 0 : getTravelDirection().hashCode());
@@ -154,6 +171,8 @@ public class RailwayVehicle implements Serializable {
         sb.append(", imagePathE=").append(imagePathE);
         sb.append(", imagePathD=").append(imagePathD);
         sb.append(", vehicleInfo=").append(vehicleInfo);
+        sb.append(", vehicleSeq=").append(vehicleSeq);
+        sb.append(", totalSequence=").append(totalSequence);
         sb.append(", vehicleIdentity=").append(vehicleIdentity);
         sb.append(", recordStation=").append(recordStation);
         sb.append(", travelDirection=").append(travelDirection);

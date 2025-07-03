@@ -28,6 +28,8 @@ public class DetectionComponentPartVO {
     private String travelDirection;
     private String bureau;
     private String section;
+    private Integer vehicleSeq;
+    private Integer totalSequence;
     private Date vehicleCreatedAt;     // 对应 RailwayVehicleVO.createdAt
 
 }

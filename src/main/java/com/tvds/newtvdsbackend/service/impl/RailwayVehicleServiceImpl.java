@@ -39,6 +39,7 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
 
     private final MinioConfig minioConfig;
     private final MinioClient minioClient;
+    private final RailwayVehicleMapper railwayVehicleMapper;
 
     @Override
     public boolean addRailwayVehicle(
@@ -49,6 +50,8 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
             String bureau,
             String section,
             String vehicleDesc,
+            String vehicleSeq,
+            String totalSequence,
             MultipartFile[] imageFiles
     ) {
         // 必须要有5个图片
@@ -77,10 +80,10 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
                                 .bucket(minioConfig.getRailwayVehicleBucket())
                                 .object(objectName)
                                 .stream(imageFile.getInputStream(), imageFile.getSize(), -1)
-                                .contentType(imageFile.getContentType())
                                 .build()
                 );
             } catch (Exception e) {
+                System.out.println("上传行车图像失败: " + e.getMessage());
                 return false;
             }
             // 添加到文件名列表
@@ -102,22 +105,17 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
         railwayVehicle.setImagePathC(fileNames.get(2));
         railwayVehicle.setImagePathD(fileNames.get(3));
         railwayVehicle.setImagePathE(fileNames.get(4));
+
+        railwayVehicle.setVehicleSeq(vehicleSeq == null ? 1 : Integer.parseInt(vehicleSeq));
+        railwayVehicle.setTotalSequence(totalSequence == null ? 1 : Integer.parseInt(totalSequence));
         return this.save(railwayVehicle);
     }
 
     @Override
     public PageVO<RailwayVehicleVO> getRailwayVehiclePage(RailwayVehiclePageDTO railwayVehiclePageDTO) {
-        Page<RailwayVehicle> page = new Page<>(railwayVehiclePageDTO.getCurrentPage(), railwayVehiclePageDTO.getPageSize());
-        LambdaQueryWrapper<RailwayVehicle> queryWrapper = new LambdaQueryWrapper<>();
-        if (!Objects.equals(railwayVehiclePageDTO.getVehicleInfo(), "")) {
-            queryWrapper.eq(RailwayVehicle::getVehicleInfo, railwayVehiclePageDTO.getVehicleInfo());
-        }
-        queryWrapper.like(RailwayVehicle::getVehicleDesc, railwayVehiclePageDTO.getVehicleDesc())
-                .orderByDesc(RailwayVehicle::getCreatedAt);
-        this.page(page, queryWrapper);
-        List<RailwayVehicle> records = page.getRecords();
-        List<RailwayVehicleVO> railwayVehicleVOS = BeanUtil.copyToList(records, RailwayVehicleVO.class);
-        return new PageVO<>(page.getTotal(), page.getCurrent(), page.getSize(), railwayVehicleVOS);
+        Page<RailwayVehicleVO> page = new Page<>(railwayVehiclePageDTO.getCurrentPage(), railwayVehiclePageDTO.getPageSize());
+        railwayVehicleMapper.getRailwayVehiclePage(page, railwayVehiclePageDTO);
+        return new PageVO<>(page.getTotal(), page.getCurrent(), page.getSize(), page.getRecords());
     }
 
     @Override

@@ -12,6 +12,8 @@
         <result property="imagePathE" column="image_path_e" />
         <result property="imagePathD" column="image_path_d" />
         <result property="vehicleInfo" column="vehicle_info" />
+        <result property="vehicleSeq" column="vehicle_seq" />
+        <result property="totalSequence" column="total_sequence" />
         <result property="vehicleIdentity" column="vehicle_identity" />
         <result property="recordStation" column="record_station" />
         <result property="travelDirection" column="travel_direction" />
@@ -21,10 +23,68 @@
         <result property="createdAt" column="created_at" />
         <result property="vehicleDesc" column="vehicle_desc" />
     </resultMap>
+    <resultMap id="RailwayVehicleVOResultMap" type="com.tvds.newtvdsbackend.domain.vo.RailwayVehicleVO">
+        <id property="id" column="id" />
+        <result property="vehicleInfo" column="vehicle_info" />
+        <result property="vehicleDesc" column="vehicle_desc" />
+        <result property="recordStation" column="record_station" />
+        <result property="vehicleIdentity" column="vehicle_identity" />
+        <result property="travelDirection" column="travel_direction" />
+        <result property="vehicleSeq" column="vehicle_seq" />
+        <result property="totalSequence" column="total_sequence" />
+        <result property="bureau" column="bureau" />
+        <result property="section" column="section" />
+        <result property="createdAt" column="created_at" />
+        <association property="taskItem" javaType="com.tvds.newtvdsbackend.domain.vo.VehicleExtraTaskItem">
+            <result property="taskId" column="task_id"/>
+            <result property="taskStatus" column="task_status"/>
+            <result property="createdAt" column="task_created_at"/>
+            <result property="updatedAt" column="task_updated_at"/>
+        </association>
+    </resultMap>
 
     <sql id="Base_Column_List">
         id,image_path_a,image_path_b,image_path_c,image_path_e,image_path_d,
-        vehicle_info,vehicle_identity,record_station,travel_direction,bureau,
-        section,is_deleted,created_at,vehicle_desc
+        vehicle_info,vehicle_seq,total_sequence,vehicle_identity,record_station,
+        travel_direction,bureau,section,is_deleted,created_at,
+        vehicle_desc
     </sql>
+    <select id="getRailwayVehiclePage" resultMap="RailwayVehicleVOResultMap">
+        SELECT
+        rv.id,
+        rv.vehicle_info,
+        rv.vehicle_desc,
+        rv.record_station,
+        rv.vehicle_identity,
+        rv.travel_direction,
+        rv.vehicle_seq,
+        rv.total_sequence,
+        rv.bureau,
+        rv.section,
+        rv.created_at,
+        dt.id AS task_id,
+        dt.task_status,
+        dt.created_at AS task_created_at,
+        dt.updated_at AS task_updated_at
+        FROM
+        railway_vehicle rv
+        LEFT JOIN (
+        SELECT
+        t1.*,
+        ROW_NUMBER() OVER(PARTITION BY vehicle_id ORDER BY created_at DESC) as rn
+        FROM
+        detection_task t1
+        WHERE t1.is_deleted = 0
+        ) dt ON rv.id = dt.vehicle_id AND dt.rn = 1
+        WHERE
+        rv.is_deleted = 0
+        <if test="dto.vehicleInfo != null and dto.vehicleInfo != ''">
+            AND rv.vehicle_info LIKE CONCAT('%', #{dto.vehicleInfo}, '%')
+        </if>
+        <if test="dto.vehicleDesc != null and dto.vehicleDesc != ''">
+            AND rv.vehicle_desc LIKE CONCAT('%', #{dto.vehicleDesc}, '%')
+        </if>
+        ORDER BY
+        rv.created_at DESC
+    </select>
 </mapper>

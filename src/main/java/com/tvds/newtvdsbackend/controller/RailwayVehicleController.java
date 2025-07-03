@@ -36,9 +36,13 @@ public class RailwayVehicleController {
             @RequestPart(required = false) String vehicleIdentity,
             @RequestPart(required = false) String bureau,
             @RequestPart(required = false) String section,
+            @RequestPart(required = false) String vehicleSeq,
+            @RequestPart(required = false) String totalSequence,
             @RequestPart(required = false) String vehicleDesc,
-            @RequestPart MultipartFile[] imageFiles
+            @RequestPart(required = false) MultipartFile[] imageFiles
     ) {
+        System.out.println(recordStation);
+        System.out.println(imageFiles.length);
         boolean f = railwayTrainService.addRailwayVehicle(
                 recordStation,
                 travelDirection,
@@ -47,6 +51,8 @@ public class RailwayVehicleController {
                 bureau,
                 section,
                 vehicleDesc,
+                vehicleSeq,
+                totalSequence,
                 imageFiles
         );
         if (f) {
