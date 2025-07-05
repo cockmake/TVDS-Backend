@@ -26,10 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 
 @Service
@@ -172,5 +169,26 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
         } catch (Exception e) {
             throw new ServiceException(Map.of("1", "获取行车图像失败"));
         }
+    }
+
+    @Override
+    public List<String> getVehicleInfoOptions(Date startDate, Date endDate) {
+        // 聚类出vehicleInfo
+        LambdaQueryWrapper<RailwayVehicle> queryWrapper = new LambdaQueryWrapper<>();
+        if (startDate == null || endDate == null) {
+            queryWrapper.select(RailwayVehicle::getVehicleInfo)
+                    .groupBy(RailwayVehicle::getVehicleInfo);
+        } else {
+            queryWrapper.select(RailwayVehicle::getVehicleInfo)
+                    .between(RailwayVehicle::getCreatedAt, startDate, endDate)
+                    .groupBy(RailwayVehicle::getVehicleInfo);
+        }
+        List<RailwayVehicle> railwayVehicles = this.list(queryWrapper);
+        List<String> vehicleInfoOptions = new ArrayList<>();
+        for (RailwayVehicle railwayVehicle : railwayVehicles) {
+            String vehicleInfo = railwayVehicle.getVehicleInfo();
+            vehicleInfoOptions.add(vehicleInfo);
+        }
+        return vehicleInfoOptions;
     }
 }

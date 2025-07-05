@@ -9,6 +9,7 @@ import com.tvds.newtvdsbackend.domain.vo.RailwayVehicleVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 
@@ -28,4 +29,6 @@ public interface RailwayVehicleService extends IService<RailwayVehicle> {
     PageVO<RailwayVehicleVO> getRailwayVehiclePage(RailwayVehiclePageDTO railwayVehiclePageDTO);
     boolean updateRailwayVehicle(String id, RailwayVehicleFormDTO railwayVehicleFormDTO);
     InputStream getRailwayVehicleImage(String id, Integer direction);
+
+    List<String> getVehicleInfoOptions(Date startDate, Date endDate);
 }

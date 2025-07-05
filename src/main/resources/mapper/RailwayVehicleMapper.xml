@@ -76,13 +76,16 @@
         detection_task t1
         WHERE t1.is_deleted = 0
         ) dt ON rv.id = dt.vehicle_id AND dt.rn = 1
-        WHERE
-        rv.is_deleted = 0
-        <if test="dto.vehicleInfo != null and dto.vehicleInfo != ''">
-            AND rv.vehicle_info LIKE CONCAT('%', #{dto.vehicleInfo}, '%')
+        WHERE rv.is_deleted = 0
+        <if test="dto.startDate != null and dto.endDate != null">
+            AND rv.created_at BETWEEN #{dto.startDate} AND #{dto.endDate}
         </if>
-        <if test="dto.vehicleDesc != null and dto.vehicleDesc != ''">
-            AND rv.vehicle_desc LIKE CONCAT('%', #{dto.vehicleDesc}, '%')
+        <if test="dto.vehicleInfoList != null and dto.vehicleInfoList.size() > 0">
+            AND rv.vehicle_info IN
+            <foreach item="item" index="index" collection="dto.vehicleInfoList"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         ORDER BY
         rv.created_at DESC

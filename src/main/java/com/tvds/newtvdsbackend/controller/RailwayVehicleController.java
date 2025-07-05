@@ -1,6 +1,7 @@
 package com.tvds.newtvdsbackend.controller;
 
 import cn.hutool.http.ContentType;
+import com.tvds.newtvdsbackend.domain.dto.DateRangeDTO;
 import com.tvds.newtvdsbackend.domain.dto.RailwayVehicleFormDTO;
 import com.tvds.newtvdsbackend.domain.dto.RailwayVehiclePageDTO;
 import com.tvds.newtvdsbackend.domain.entity.RailwayVehicle;
@@ -9,6 +10,7 @@ import com.tvds.newtvdsbackend.domain.vo.PageVO;
 import com.tvds.newtvdsbackend.domain.vo.RailwayVehicleVO;
 import com.tvds.newtvdsbackend.exception.ServiceException;
 import com.tvds.newtvdsbackend.service.RailwayVehicleService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -20,6 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -27,6 +32,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RailwayVehicleController {
     private final RailwayVehicleService railwayTrainService;
+
+
+    @PostMapping("/vehicle-info-options")
+    public BaseResponseVO getVehicleInfoOptions(
+            @RequestBody DateRangeDTO dateRange
+    ) {
+        List<String> vehicleInfoOptions = railwayTrainService.getVehicleInfoOptions(
+                dateRange.getStartDate(),
+                dateRange.getEndDate()
+        );
+        return BaseResponseVO.success(vehicleInfoOptions);
+    }
 
     @PostMapping
     public BaseResponseVO addRailwayVehicle(
