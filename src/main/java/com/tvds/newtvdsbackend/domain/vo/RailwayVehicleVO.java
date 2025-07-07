@@ -20,4 +20,6 @@ public class RailwayVehicleVO {
 
     // 额外的任务状态字段
     private VehicleExtraTaskItem taskItem;
+
+
 }

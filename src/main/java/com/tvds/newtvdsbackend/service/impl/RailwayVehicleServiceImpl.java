@@ -8,10 +8,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tvds.newtvdsbackend.configuration.MinioConfig;
 import com.tvds.newtvdsbackend.domain.dto.RailwayVehicleFormDTO;
 import com.tvds.newtvdsbackend.domain.dto.RailwayVehiclePageDTO;
+import com.tvds.newtvdsbackend.domain.entity.DetectionResult;
 import com.tvds.newtvdsbackend.domain.entity.RailwayVehicle;
 import com.tvds.newtvdsbackend.domain.vo.PageVO;
 import com.tvds.newtvdsbackend.domain.vo.RailwayVehicleVO;
 import com.tvds.newtvdsbackend.exception.ServiceException;
+import com.tvds.newtvdsbackend.mapper.DetectionResultMapper;
+import com.tvds.newtvdsbackend.mapper.DetectionTaskMapper;
 import com.tvds.newtvdsbackend.service.RailwayVehicleService;
 import com.tvds.newtvdsbackend.mapper.RailwayVehicleMapper;
 import com.tvds.newtvdsbackend.utils.CommonUtil;
@@ -37,6 +40,7 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
     private final MinioConfig minioConfig;
     private final MinioClient minioClient;
     private final RailwayVehicleMapper railwayVehicleMapper;
+    private final DetectionResultMapper detectionResultMapper;
 
     @Override
     public boolean addRailwayVehicle(
@@ -112,7 +116,24 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
     public PageVO<RailwayVehicleVO> getRailwayVehiclePage(RailwayVehiclePageDTO railwayVehiclePageDTO) {
         Page<RailwayVehicleVO> page = new Page<>(railwayVehiclePageDTO.getCurrentPage(), railwayVehiclePageDTO.getPageSize());
         railwayVehicleMapper.getRailwayVehiclePage(page, railwayVehiclePageDTO);
-        return new PageVO<>(page.getTotal(), page.getCurrent(), page.getSize(), page.getRecords());
+        // 如果taskItem不为空，判断taskItem.taskId对应的结果表，是否有异常相关的结果，如果有的话就附加一个Ture
+        List<RailwayVehicleVO> pageRecords = page.getRecords();
+        for (RailwayVehicleVO railwayVehicleVO : pageRecords) {
+            if (railwayVehicleVO.getTaskItem() != null) {
+                LambdaQueryWrapper<DetectionResult> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(DetectionResult::getTaskId, railwayVehicleVO.getTaskItem().getTaskId())
+                        .eq(DetectionResult::getIsAbnormal, 1);
+                List<DetectionResult> detectionResults = detectionResultMapper.selectList(queryWrapper);
+                if (detectionResults != null && !detectionResults.isEmpty()) {
+                    railwayVehicleVO.getTaskItem().setHasAbnormal(true);
+                } else {
+                    railwayVehicleVO.getTaskItem().setHasAbnormal(false);
+                }
+            }
+        }
+        // 对结果进行排序，有异常的放在前面
+        pageRecords.sort(Comparator.comparing(vo -> vo.getTaskItem() != null && vo.getTaskItem().getHasAbnormal() ? 0 : 1));
+        return new PageVO<>(page.getTotal(), page.getCurrent(), page.getSize(), pageRecords);
     }
 
     @Override

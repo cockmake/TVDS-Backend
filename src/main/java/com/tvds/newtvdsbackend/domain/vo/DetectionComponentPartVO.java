@@ -9,6 +9,7 @@ public class DetectionComponentPartVO {
     private String resultId;
     private Double detectionConf;
     private Boolean isAbnormal;
+    private String abnormalityDesc;
     private Double x1;
     private Double y1;
     private Double x2;

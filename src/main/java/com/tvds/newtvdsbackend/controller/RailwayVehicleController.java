@@ -58,8 +58,6 @@ public class RailwayVehicleController {
             @RequestPart(required = false) String vehicleDesc,
             @RequestPart(required = false) MultipartFile[] imageFiles
     ) {
-        System.out.println(recordStation);
-        System.out.println(imageFiles.length);
         boolean f = railwayTrainService.addRailwayVehicle(
                 recordStation,
                 travelDirection,

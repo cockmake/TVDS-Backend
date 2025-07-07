@@ -43,6 +43,7 @@
             resultType="com.tvds.newtvdsbackend.domain.vo.DetectionComponentPartVO">
         SELECT dr.id               AS result_id,
                dr.detection_conf   AS detection_conf,
+               dr.abnormality_desc AS abnormality_desc,
                dr.is_abnormal      AS is_abnormal,
                dr.x1               AS x1,
                dr.y1               AS y1,
