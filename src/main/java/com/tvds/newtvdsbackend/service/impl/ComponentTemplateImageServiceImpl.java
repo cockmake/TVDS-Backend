@@ -117,6 +117,7 @@ public class ComponentTemplateImageServiceImpl extends ServiceImpl<ComponentTemp
     public List<ComponentTemplateImageVO> getTemplateImageByComponentId(String componentId) {
         LambdaQueryWrapper<ComponentTemplateImage> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ComponentTemplateImage::getComponentId, componentId);
+        wrapper.orderByAsc(ComponentTemplateImage::getCreatedAt);
         List<ComponentTemplateImage> templateImages = this.list(wrapper);
         return BeanUtil.copyToList(templateImages, ComponentTemplateImageVO.class);
     }

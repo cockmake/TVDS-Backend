@@ -71,7 +71,7 @@ public class ComponentServiceImpl extends ServiceImpl<ComponentMapper, Component
             // 这个是精确查询
             queryWrapper.eq(Component::getComponentType, componentPageDTO.getComponentType());
         }
-        queryWrapper.orderByDesc(Component::getCreatedAt);
+        queryWrapper.orderByAsc(Component::getCreatedAt);
         Page<Component> componentPage = this.page(page, queryWrapper);
         PageVO<ComponentVO> pageVO = new PageVO<>();
         pageVO.setCurrentPage(componentPage.getCurrent());
