@@ -1,9 +1,9 @@
 ip:
-  mysql: 10.0.100.211
-  rabbitmq: 10.0.100.211
-  redis: 10.0.100.211
-  python: 10.0.100.211
-  minio: 10.0.100.211
+  mysql: 10.0.100.210
+  rabbitmq: 10.0.100.210
+  redis: 10.0.100.210
+  python: 10.0.100.210
+  minio: 10.0.100.210
 port:
   mysql: 3308
   rabbitmq: 5674

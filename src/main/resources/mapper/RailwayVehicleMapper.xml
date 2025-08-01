@@ -40,6 +40,7 @@
             <result property="taskStatus" column="task_status"/>
             <result property="createdAt" column="task_created_at"/>
             <result property="updatedAt" column="task_updated_at"/>
+            <result property="abnormalCount" column="abnormal_count"/>
         </association>
     </resultMap>
 
@@ -65,18 +66,25 @@
         dt.id AS task_id,
         dt.task_status,
         dt.created_at AS task_created_at,
-        dt.updated_at AS task_updated_at
+        dt.updated_at AS task_updated_at,
+        COALESCE(dt.abnormal_count, 0) AS abnormal_count
         FROM
         railway_vehicle rv
         LEFT JOIN (
         SELECT
-        t1.*,
-        ROW_NUMBER() OVER(PARTITION BY vehicle_id ORDER BY created_at DESC) as rn
+        t1.id,
+        t1.vehicle_id,
+        t1.task_status,
+        t1.created_at,
+        t1.updated_at,
+        (SELECT COUNT(1) FROM detection_result dr WHERE dr.task_id = t1.id AND dr.is_abnormal = 1) AS abnormal_count,
+        ROW_NUMBER() OVER(PARTITION BY t1.vehicle_id ORDER BY t1.created_at DESC) as rn
         FROM
         detection_task t1
         WHERE t1.is_deleted = 0
         ) dt ON rv.id = dt.vehicle_id AND dt.rn = 1
-        WHERE rv.is_deleted = 0
+        WHERE
+        rv.is_deleted = 0
         <if test="dto.startDate != null and dto.endDate != null">
             AND rv.created_at BETWEEN #{dto.startDate} AND #{dto.endDate}
         </if>

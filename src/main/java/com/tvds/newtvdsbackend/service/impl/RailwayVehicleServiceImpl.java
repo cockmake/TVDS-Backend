@@ -116,23 +116,15 @@ public class RailwayVehicleServiceImpl extends ServiceImpl<RailwayVehicleMapper,
     public PageVO<RailwayVehicleVO> getRailwayVehiclePage(RailwayVehiclePageDTO railwayVehiclePageDTO) {
         Page<RailwayVehicleVO> page = new Page<>(railwayVehiclePageDTO.getCurrentPage(), railwayVehiclePageDTO.getPageSize());
         railwayVehicleMapper.getRailwayVehiclePage(page, railwayVehiclePageDTO);
-        // 如果taskItem不为空，判断taskItem.taskId对应的结果表，是否有异常相关的结果，如果有的话就附加一个Ture
         List<RailwayVehicleVO> pageRecords = page.getRecords();
-        for (RailwayVehicleVO railwayVehicleVO : pageRecords) {
-            if (railwayVehicleVO.getTaskItem() != null) {
-                LambdaQueryWrapper<DetectionResult> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.eq(DetectionResult::getTaskId, railwayVehicleVO.getTaskItem().getTaskId())
-                        .eq(DetectionResult::getIsAbnormal, 1);
-                List<DetectionResult> detectionResults = detectionResultMapper.selectList(queryWrapper);
-                if (detectionResults != null && !detectionResults.isEmpty()) {
-                    railwayVehicleVO.getTaskItem().setHasAbnormal(true);
-                } else {
-                    railwayVehicleVO.getTaskItem().setHasAbnormal(false);
-                }
+        // 对结果进行排序，异常多的排在前面
+        // vo.getTaskItem().getAbnormalCount()
+        pageRecords.sort(Comparator.comparingInt(vo -> {
+            if (vo.getTaskItem() != null && vo.getTaskItem().getAbnormalCount() != null) {
+                return -vo.getTaskItem().getAbnormalCount(); // 降序
             }
-        }
-        // 对结果进行排序，有异常的放在前面
-        pageRecords.sort(Comparator.comparing(vo -> vo.getTaskItem() != null && vo.getTaskItem().getHasAbnormal() ? 0 : 1));
+            return 0; // 没有异常的排在后面
+        }));
         return new PageVO<>(page.getTotal(), page.getCurrent(), page.getSize(), pageRecords);
     }
 
