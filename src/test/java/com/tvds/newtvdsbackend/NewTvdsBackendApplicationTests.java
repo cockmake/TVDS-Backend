@@ -1,6 +1,11 @@
 package com.tvds.newtvdsbackend;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.tvds.newtvdsbackend.domain.entity.Component;
 import com.tvds.newtvdsbackend.domain.mq.ComponentLocationResult;
+import com.tvds.newtvdsbackend.domain.vo.ComponentVO;
+import com.tvds.newtvdsbackend.domain.vo.VisualPromptVO;
+import com.tvds.newtvdsbackend.mapper.ComponentMapper;
 import com.tvds.newtvdsbackend.utils.RabbitMqUtil;
 import io.minio.DownloadObjectArgs;
 import io.minio.MinioClient;
@@ -14,6 +19,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
@@ -28,6 +34,8 @@ class NewTvdsBackendApplicationTests {
     private MinioClient minioClient;
     @Autowired
     private RabbitTemplate rabbitTemplate;
+    @Autowired
+    ComponentMapper componentMapper;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -98,6 +106,16 @@ class NewTvdsBackendApplicationTests {
                         .build()
         );
         System.out.println("文件上传成功");
+    }
+
+    @Test
+    void testComponentMapper() {
+        // 获取所有行，并按照创建时间排序
+        LambdaQueryWrapper<Component> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByAsc(Component::getCreatedAt);
+        List<Component> list = componentMapper.selectList(queryWrapper);
+        System.out.println(list);
+        System.out.println(list.size());
     }
 
 }

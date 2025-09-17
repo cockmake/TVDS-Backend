@@ -1,10 +1,12 @@
 package com.tvds.newtvdsbackend.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tvds.newtvdsbackend.configuration.MinioConfig;
 import com.tvds.newtvdsbackend.domain.dto.DetectionTaskPageDTO;
+import com.tvds.newtvdsbackend.domain.entity.Component;
 import com.tvds.newtvdsbackend.domain.entity.DetectionTask;
 import com.tvds.newtvdsbackend.domain.entity.RailwayVehicle;
 import com.tvds.newtvdsbackend.domain.vo.DetectionTaskVO;
@@ -44,7 +46,7 @@ public class DetectionTaskServiceImpl extends ServiceImpl<DetectionTaskMapper, D
     private final MinioConfig minioConfig;
 
     @Override
-    public boolean createDetectionTask(String vehicleId) {
+    public boolean createDetectionTaskV1(String vehicleId) {
         // 1. 查询车辆是否存在
         RailwayVehicle railwayVehicle = railwayVehicleMapper.selectById(vehicleId);
         if (railwayVehicle == null) {
@@ -88,6 +90,61 @@ public class DetectionTaskServiceImpl extends ServiceImpl<DetectionTaskMapper, D
                     return message;
                 }
         );
+        return true;
+    }
+
+    @Override
+    public boolean createDetectionTaskV2(String vehicleId) {
+        // 1. 查询车辆是否存在
+        RailwayVehicle railwayVehicle = railwayVehicleMapper.selectById(vehicleId);
+        if (railwayVehicle == null) {
+            throw new ServiceException(Map.of(
+                    "1", "车辆不存在"
+            ));
+        }
+        // 2. 车辆存在就创建检测任务
+        DetectionTask detectionTask = new DetectionTask();
+        detectionTask.setVehicleId(vehicleId);
+        // 3. 查询模型的类别信息
+        LambdaQueryWrapper<Component> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByAsc(Component::getCreatedAt);
+        List<Component> componentList = componentMapper.selectList(queryWrapper);
+        if (componentList.isEmpty()) {
+            throw new ServiceException(Map.of(
+                    "1", "未配置检测模型"
+            ));
+        }
+        // 4.将任务写入到数据库
+        boolean f = this.save(detectionTask);
+        if (!f) {
+            throw new ServiceException(Map.of(
+                    "1", "创建检测任务失败"
+            ));
+        }
+        // 5. 将所有待检测模板放到任务队列中
+        rabbitTemplate.convertAndSend(
+                RabbitMqUtil.COMPONENT_LOCATION_EXCHANGE_NAME,
+                RabbitMqUtil.PRODUCER_COMPONENT_LOCATION_ROUTING_KEY,
+                Map.of(
+                        "taskId", detectionTask.getId(),
+                        "detectionResultBucket", minioConfig.getDetectResultBucket(),
+                        "vehicleImagePaths", List.of(
+                                railwayVehicle.getImagePathA(),
+                                railwayVehicle.getImagePathB(),
+                                railwayVehicle.getImagePathC(),
+                                railwayVehicle.getImagePathD(),
+                                railwayVehicle.getImagePathE()
+                        ),
+                        "railwayVehicleBucket", minioConfig.getRailwayVehicleBucket(),
+                        "componentList", componentList
+                ),
+                message -> {
+                    // 设置消息的过期时间为 5 分钟
+                    // 这里可以对消息进行一些处理
+                    return message;
+                }
+        );
+        // 6. 返回结果
         return true;
     }
 

@@ -17,7 +17,7 @@ public class DetectionTaskController {
     public BaseResponseVO createDetectionTask(
             @PathVariable String vehicleId
     ) {
-        boolean f = detectionTaskService.createDetectionTask(vehicleId);
+        boolean f = detectionTaskService.createDetectionTaskV2(vehicleId);
         return BaseResponseVO.success(f);
     }
 
